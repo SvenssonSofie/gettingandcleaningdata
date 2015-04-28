@@ -1,3 +1,8 @@
+#check if package reshape is already installed
+#used for melt and dcast
+if(!require("reshape2")) install.packages("reshape2")
+library(dplyr) 
+
 #download data
 temp <- tempfile()
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",temp)
@@ -32,8 +37,8 @@ allData <- merge(allData,activity_labels,by.x="activity",by.y="V1",sort=F)
 allData$activity <- allData$V2
 
 #extract relevant indices
-stdIndex <- grep("std+",names(allData))
-meanIndex <- grep("mean+",names(allData))
+stdIndex <- grep("std\\(\\)",names(allData))
+meanIndex <- grep("-mean\\(\\)",names(allData))
 
 #create the new Data with relevant information
 newData <- allData[, c(stdIndex,meanIndex)]
@@ -45,4 +50,4 @@ meltedData <- melt(newData,id=c("subject","activity"))
 tidyData <- dcast(meltedData, subject + activity ~ variable, mean)
 
 #write to document
-write.fwf(tidyData, "mean.txt")
+write.table(tidyData, "mean.txt", row.name=F)
