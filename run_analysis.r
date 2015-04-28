@@ -45,4 +45,4 @@ meltedData <- melt(newData,id=c("subject","activity"))
 tidyData <- dcast(meltedData, subject + activity ~ variable, mean)
 
 #write to document
-write.table(tidyData, "mean.txt", row.name=F)
+write.fwf(tidyData, "mean.txt")
